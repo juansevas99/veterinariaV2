@@ -31,7 +31,7 @@
         
         
 
-       
+       	
         private Date fecha;
         private Time hora;
         private Time duracion;

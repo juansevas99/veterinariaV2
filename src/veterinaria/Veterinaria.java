@@ -7,10 +7,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import veterinaria.Mascota.Especie;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -34,22 +36,25 @@ public class Veterinaria {
 
         cantidadCitas = citasTotales.size() + 1;
 
-        Examen examen1 = new Examen("aaa", 100);
-        Examen examen2 = new Examen("bbb", 200);
-        Examen examen3 = new Examen("ccc", 300);
+        Examen examen1 = new Examen("Hemograma", 100);
+        Examen examen2 = new Examen("Perfil bioquimico", 200);
+        Examen examen3 = new Examen("Radiografia", 300);
+        
+        
+        
         examenesDisponibles.add(examen1);
         examenesDisponibles.add(examen2);
         examenesDisponibles.add(examen3);
 
-        Medicamento medicamento1 = new Medicamento("aaa", 100);
-        Medicamento medicamento2 = new Medicamento("bbb", 200);
-        Medicamento medicamento3 = new Medicamento("ccc", 300);
+        Medicamento medicamento1 = new Medicamento("Fipronil", 100);
+        Medicamento medicamento2 = new Medicamento("Fenbendazol", 200);
+        Medicamento medicamento3 = new Medicamento("Amoxicilina", 300);
         medicamentosDisponibles.add(medicamento1);
         medicamentosDisponibles.add(medicamento2);
         medicamentosDisponibles.add(medicamento3);
 
-        Veterinario veterinario1 = new Veterinario("Jose", "General", 0);
-        Veterinario veterinario2 = new Veterinario("Alexa", "Esp1", 0);
+        Veterinario veterinario1 = new Veterinario("Jose Carrasquilla", "General", 10132);
+        Veterinario veterinario2 = new Veterinario("Alexandra Torres", "Esp1", 12142);
         veterinarios.add(veterinario1);
         veterinarios.add(veterinario2);
 
@@ -58,8 +63,11 @@ public class Veterinaria {
         Mascota mascota2 = new Mascota("Kenya", 5, Especie.perro, "Criolla", "F", 1,30, propietario1,"01/01/2032");
         mascotas.add(mascota1);
         mascotas.add(mascota2);
+        
+        
         System.out.println(mascotas.get(0));
-        Cita cita1 = new Cita(1, null, null, null, "VALIDA", veterinario1, mascota1);
+        Cita cita1 = new Cita(1, null, null, null,Cita.ESTADO_ACTIVO , veterinario2, mascota1);
+        citasTotales.add(cita1);
 
         desplegarMenuPrincipal();
     }
@@ -426,227 +434,11 @@ public class Veterinaria {
     
     
     
-    //----------------------------GESTION DE VETERINARIO------------------------------------------------------------------
     
-   private static void gestionarConsultas() {
-	   System.out.print("------------------------------------------------\n"
-	   		+ "REGISTRO DE CONSULTA\n" // sirve para que el veterinario seleccione una cita y traiga el codigo correspondiente
-	   		+ "1. Ver consultas\n"
-	   		+ "2. Gestionar consulta\n"
-	   		+ "3.  "
-	   		+ "");
-	   
-	   String opcion = tc.next();
-	   
-	   
-       switch (opcion) {
-  
-
-       case "1":
-    	   gestionarConsulta();
-    	   
-       break;
-           
-       default:
-           System.out.println("Opcion incorrecta en el menu Consulta ");
-           gestionarVeterinarios();
-           break;
-   }
-   }
-   
-   
-   private static void gestionarConsulta() {
-	   System.out.println("LISTA DE CONSULTAS");
-	   
-	  System.out.println("Indique el numero de la cita");
-	  int citaAsociada=tc.nextInt();
-	  
-	  Optional<Consulta> consulta=consultasTotales.stream().filter(e->e.getCitaAsociada().getNumSerial()==citaAsociada).findFirst();
-	  
-	  // despliega toda la iformacion de la consulta
-	  
-	  System.out.println(consulta);
-	  
-	  
-	  
-	  // Crecion del diagnostico
-	  
-	 
-	  
-	  System.out.println("Resuma la consulta \n");
-	  
-	  String conceptoMedico=tc.nextLine();
-	  
-	  
-	  
-	  
-	  
-	  Diagnostico  diagnostico = new Diagnostico(conceptoMedico);
-	  
-	  // Seleccion de examenes
-	  
-	 for (Examen examen : examenesDisponibles) {
-		System.out.println(examen);
-	}
-	 
-	 
-	 ArrayList<Examen> examenesSeleccionados= new ArrayList<Examen>();
-	 boolean resp=true;
-	 while (resp) {
-		 
-		 System.out.println("Coloque el nombre del examen que desea asociar a la consulta");
-		 
-		  
-		 
-		 String nombreExamen=tc.nextLine();
-		 
-		 Optional<Examen> examen=examenesDisponibles.stream().filter(e->e.getNombre().equals(nombreExamen)).findFirst();
-		 
-		 
-		 examenesSeleccionados.add(examen.get());
-		 
-		 System.out.println("Desea añadir otro examen?\n"
-		 		+ "1. Si\n"
-		 		+ "2. No");
-		 int opcion=tc.nextInt();
-		 if (opcion==2) {
-			 resp=false;
-		 }
-	 }
-	 
-	 
-	 
-	  diagnostico.setExamenes(examenesSeleccionados);
-	  
-	 
-	  
-	  // creacion tratamiento
-	  
-	  // seleccion de medicamentos
-	  
-	  
-	  for (Medicamento medicamento: medicamentosDisponibles) {
-			System.out.println(medicamento);
-		}
-		 
-		 
-		 ArrayList<Medicamento> medicamentosSeleccionados= new ArrayList<Medicamento>();
-		 boolean resp1=true;
-		 while (resp1) {
-			 
-			 System.out.println("Coloque el nombre del Medicamento que desea asociar al tratamiento");
-	
-			 
-			 String nombreMedicamento=tc.nextLine();
-			 
-			 Optional<Medicamento> medicamento=medicamentosDisponibles.stream().filter(e->e.equals(nombreMedicamento)).findFirst();
-			 
-			 
-			 medicamentosSeleccionados.add(medicamento.get());
-			 
-			 System.out.println("Desea añadir otro medicamento?\n"
-			 		+ "1. Si\n"
-			 		+ "2. No");
-			 int opcion1=tc.nextInt();
-			 if (opcion1==2) {
-				 resp1=false;
-			 }
-		 }
-	  
-	// Cambiar constructor
-	System.out.println("Indique comentarios para el tratamiento");	 
-	
-	Tratamiento tratamiento= new Tratamiento(medicamentosDisponibles, 0,0,0);
-	
-	// termiar gestion de consulta
-	consulta.get().setDiagnostico(diagnostico);
-	consulta.get().setTratamiento(tratamiento);
-	
-	// creacion de factura
-   Factura factura= new Factura(consulta.get());
-   
-   
-   // se mostrara factura aqui con el diseño que hara Alexandra
-   System.out.println(factura);
-   
-	
-	
-	  
-   }
-   
-
    
    
    
-    private static void confirmacionCita() {
-    	// Preguntar por codigo Citas
-    	
-    	System.out.println("REGISTRO DE CONSULTA --- --------------\n"
-    			+ "\n"
-    			+ "Ingrese el codigo serial de la cita que desea asociar");
-    	int codigo=tc.nextInt();
-    	
-    	// trae la cita asociada
-    	Optional<Cita> citaAsociada=citasTotales.stream().filter(e->e.getNumSerial()==codigo).findFirst();
-    	// Verificar si cita esta dentro la horas indicadas
-    	
-    	System.out.println("Cual es el estadoa de la cita?\n"
-    			+ "1 En curso\n"
-    			+ "2 No se presento\n"
-    			+ "3 Llego tarde");
-    	
-    	int resp=tc.nextInt();
-    	
-    	
-    	if (resp==2) {
-    		
-    		citaAsociada.get().setEstadoCita(Cita.ESTADO_INACTIVO);
-    		return;
-    	}
-    	if (resp==3) {
-    		
-    		citaAsociada.get().setEstadoCita(Cita.ESTADO_INACTIVO);
-    		return;
-    	}
-    	
-    	
-    	citaAsociada.get().setEstadoCita(Cita.ESTADO_ENCURSO);
-    	
-    	// creacion de consulta
-    	Consulta consulta = new Consulta(citaAsociada.get());
-    	
-    	
-    	
-    	
-    	// Crear diagnosticos
-    		// Asignacion de examenes
-    	// Creacion de tratamiento
-    		// Asginacion de medicamentos
-    		// asfginacion de frecuecia y dosis
-    	// Se crea la facutura
-    		// Generar Id de factura
-    		// Desplegar factura
- 
-    }
-    
-    
-    private static void verCitasPendientes() {
-    	
-    
-    	System.out.println("Ingrese el documento de identificacion del veterinario");
-    	String veterinario = tc.nextLine();
-    	Cita[] citasDispoibles =(Cita[]) citasTotales.stream().filter(e-> e.getVeterinario().equals(e) && e.getEstadoCita()==Cita.ESTADO_ACTIVO).toArray();
-    	
-    	System.out.println("Guarde el numero serial de la cita en el portapapeles de manera que pueda crear la consulta");
-    	for (Cita cita : citasDispoibles) {
-			System.out.println(cita);
-		}
-    	
-    	
-    	// Desplegar citas segun veterinario
-    	
-    }
-    
+   
     
     
     
@@ -829,7 +621,6 @@ public class Veterinaria {
                 AgendarCita();
                 break;
             case "4":
-            	mostrarFactura();
             	
             	
             	// Clases : Mascota, propietario, tratamiento, medicamentosSubministrados , consulta, cita, cons
@@ -940,15 +731,7 @@ public class Veterinaria {
         
     }
     
-    
-    private static void mostrarFactura() {    	
-    		
-    	// Pedir codigo de cita o mostrar todas las citas con codigo
-    	
-    	// Mostrar factura 
-    	Factura factura = newFactura(consulta);
-    	
-    }
+
 
     private static void verMascotas() {
         for(int i = 0; i < mascotas.size();i++){
@@ -1166,7 +949,9 @@ public class Veterinaria {
                 + "2. Registro mascota\n"
                 + "3. Agendar cita\n"
                 + "4. Mostrar factura\n"
-                + "5. Regresar al menu principal\n");
+                + "5. Confirmar Cita\n"
+                + "6. Mostrar citas Pendientes\n"
+                + "7. Regresar al menu principal\n");
 
         String opcion = tc.next();
         tc.nextLine();
@@ -1186,8 +971,246 @@ public class Veterinaria {
 
     // --------------------------------REGION VETERINARIO---------------------------
     private static void desplegarMenuVeterinario() {
+    	 System.out.print("------------------------------------------------\n"
+    		   		+ "GESTION DE CONSULTA\n" // sirve para que el veterinario seleccione una cita y traiga el codigo correspondiente
+    		   		+ "1. Ver consultas\n"
+    		   		+ "2. Gestionar consulta\n"
+    		   		+ "3.  "
+    		   		+ "");
+    		   
+    		   String opcion = tc.next();
+    		   
+    		   
+    	       switch (opcion) {
+    	  
 
+    	       case "1":
+    	    	   gestionarConsulta();
+    	    	   
+    	       break;
+    	           
+    	       default:
+    	           System.out.println("Opcion incorrecta en el menu Consulta ");
+    	           gestionarVeterinarios();
+    	           break;
+    	   }
     }
+    
+    
+    
+    private static void gestionarConsulta() {
+ 	   System.out.println("LISTA DE CONSULTAS");
+ 	   
+ 	  System.out.println("Indique el numero de la cita");
+ 	  int citaAsociada=tc.nextInt();
+ 	  
+ 	  Optional<Consulta> consulta=consultasTotales.stream().filter(e->e.getCitaAsociada().getNumSerial()==citaAsociada).findFirst();
+ 	  
+ 	  // despliega toda la iformacion de la consulta
+ 	  
+ 	  System.out.println(consulta.get());
+ 	  
+ 	  
+ 	  
+ 	  // Crecion del diagnostico
+ 	  
+ 	 tc.nextLine();
+ 	  
+ 	  System.out.println("Resuma la consulta \n");
+ 	  
+ 	  String conceptoMedico=tc.nextLine();
+ 	  
+ 	  
+ 	  
+ 	  
+ 	  
+ 	  Diagnostico  diagnostico = new Diagnostico(conceptoMedico);
+ 	  
+ 	  // Seleccion de examenes
+ 	  
+ 	 for (Examen examen : examenesDisponibles) {
+ 		System.out.println(examen);
+ 	}
+ 	 
+ 	 
+ 	 ArrayList<Examen> examenesSeleccionados= new ArrayList<Examen>();
+ 	 boolean resp=true;
+ 	 while (resp) {
+ 		 
+ 		 System.out.println("Coloque el nombre del examen que desea asociar a la consulta");
+ 		 
+ 		  
+ 		 String nombreExamen=tc.nextLine();
+ 		 
+ 		 Optional<Examen> examen=examenesDisponibles.stream().filter(e->e.getNombre().equals(nombreExamen)).findFirst();
+ 		 
+ 		 if (examen.isEmpty()) {
+ 			 System.out.println("No existe un examen con ese nombre, intentelo de nuevo");
+ 			 continue;
+ 		 }
+ 		 examenesSeleccionados.add(examen.get());
+ 		 
+ 		 System.out.println("Desea añadir otro examen?\n"
+ 		 		+ "1. Si\n"
+ 		 		+ "2. No");
+ 		 int opcion=tc.nextInt();
+ 		 if (opcion==2) {
+ 			 resp=false;
+ 		 }
+ 	 }
+ 	 
+ 	 
+ 	 
+ 	  diagnostico.setExamenes(examenesSeleccionados);
+ 	  
+ 	 
+ 	  
+ 	  // creacion tratamiento
+ 	  
+ 	  // seleccion de medicamentos
+ 	 tc.nextLine();
+ 	  
+ 	  for (Medicamento medicamento: medicamentosDisponibles) {
+ 			System.out.println(medicamento);
+ 		}
+ 		 
+ 		 
+ 		 ArrayList<Medicamento> medicamentosSeleccionados= new ArrayList<Medicamento>();
+ 		 boolean resp1=true;
+ 		 while (resp1) {
+ 			 
+ 			 System.out.println("Coloque el nombre del Medicamento que desea asociar al tratamiento");
+ 	
+ 			 
+ 			 String nombreMedicamento=tc.nextLine();
+ 			 
+ 			 Optional<Medicamento> medicamento=medicamentosDisponibles.stream().filter(e->e.getNombre().equals(nombreMedicamento)).findFirst();
+ 			 if (medicamento.isEmpty()) {
+ 	 			 System.out.println("No existe un medicamento con ese nombre, intentelo de nuevo");
+ 	 			 continue;
+ 	 		 }		 
+ 			 
+ 			 medicamentosSeleccionados.add(medicamento.get());
+ 			 
+ 			 System.out.println("Desea añadir otro medicamento?\n"
+ 			 		+ "1. Si\n"
+ 			 		+ "2. No");
+ 			 int opcion1=tc.nextInt();
+ 			 if (opcion1==2) {
+ 				 resp1=false;
+ 			 }
+ 		 }
+ 	  
+ 	// Cambiar constructor
+ 	System.out.println("Indique comentarios para el tratamiento");	 
+ 	
+ 	System.out.println("Indique la el consumo de dias");
+ 	int dias=tc.nextInt();
+ 	System.out.println("Indique el consumo de horas");
+ 	int horas=tc.nextInt();
+ 	System.out.println("Indique la dosis");
+ 	int dosis=tc.nextInt();
+ 	
+ 	
+ 	
+ 	Tratamiento tratamiento= new Tratamiento(medicamentosDisponibles, dias,horas,dosis);
+ 	// termiar gestion de consulta
+ 	consulta.get().setDiagnostico(diagnostico);
+ 	
+ 	consulta.get().setTratamiento(tratamiento);
+ 	// creacion de factura
+    
+ 	
+ 	Factura factura= new Factura(consulta.get());
+    // se mostrara factura aqui con el diseño que hara Alexandra
+    System.out.println(factura);  
+    
+    
+    }
+    
+
+    
+    
+    
+     private static void confirmacionCita() {
+     	// Preguntar por codigo Citas
+     	
+     	System.out.println("REGISTRO DE CONSULTA --- --------------\n"
+     			+ "\n"
+     			+ "Ingrese el codigo serial de la cita que desea asociar");
+     	int codigo=tc.nextInt();
+     	
+     	// trae la cita asociada
+     	Optional<Cita> citaAsociada=citasTotales.stream().filter(e->e.getNumSerial()==codigo).findFirst();
+     	// Verificar si cita esta dentro la horas indicadas
+     	
+     	
+     	
+     	if (citaAsociada.isEmpty()) {
+     		System.out.println("No existe una cita asociada con ese serial");
+     		return ;
+     	}
+     	System.out.println("Cual es el estado de la cita?\n"
+     			+ "1 En curso\n"
+     			+ "2 No se presento\n"
+     			+ "3 Llego tarde");
+     	
+     	int resp=tc.nextInt();
+     	
+     	
+     	if (resp==2) {
+     		System.out.println("Se cancela la cita y se actualiza a estado estado inactivo ... \n Retornando a menu principal");
+     		citaAsociada.get().setEstadoCita(Cita.ESTADO_INACTIVO);
+     		return;
+     	}
+     	if (resp==3) {
+     		System.out.println("Se cancela la cita y se actualiza a estado estado inactivo ... \n Retornando a menu principal");
+     		citaAsociada.get().setEstadoCita(Cita.ESTADO_INACTIVO);
+     		return;
+     	}
+     	
+     	
+     	citaAsociada.get().setEstadoCita(Cita.ESTADO_ENCURSO);
+     	
+     	// creacion de consulta
+     	Consulta consulta = new Consulta(citaAsociada.get());
+     	
+     	consultasTotales.add(consulta);
+     	System.out.println("Se creo la consulta exitosamente, deje pasar al propietario a la sala del veterinario. Este debe presentar el numero serial de la cita");
+     	
+     	// Crear diagnosticos
+     		// Asignacion de examenes
+     	// Creacion de tratamiento
+     		// Asginacion de medicamentos
+     		// asfginacion de frecuecia y dosis
+     	// Se crea la facutura
+     		// Generar Id de factura
+     		// Desplegar factura
+  
+     }
+     
+     
+     private static void verCitasPendientes() {
+     	
+     
+     	System.out.println("Ingrese el documento de identificacion del veterinario");
+     	int veterinario = tc.nextInt();
+     	List<Cita> citasDispoibles =citasTotales.stream().filter(e-> e.getVeterinario().getNumeroRegistro()==veterinario && e.getEstadoCita()==Cita.ESTADO_ACTIVO).collect(Collectors.toList());
+     	
+     	System.out.println("Guarde el numero serial de la cita en el portapapeles de manera que pueda crear la consulta");
+     	
+     	for (Cita cita : citasDispoibles) {
+ 			System.out.println(cita);
+ 			
+ 		}
+     	
+     	
+     	// Desplegar citas segun veterinario
+     	
+     }
+     
+    
+    
     // --------------------------------REGION
     // ESTADISTICAS---------------------------
 
